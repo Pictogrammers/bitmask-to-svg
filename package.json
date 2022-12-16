@@ -1,0 +1,19 @@
+{
+  "name": "@pictogrammers/bitmask-to-svg",
+  "version": "0.9.0",
+  "description": "1 Bit Bitmask to SVG",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pictogrammers/1-bit-image-to-svg.git"
+  },
+  "author": "Pictogrammers",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Pictogrammers/1-bit-image-to-svg/issues"
+  },
+  "homepage": "https://github.com/Pictogrammers/1-bit-image-to-svg#readme"
+}
