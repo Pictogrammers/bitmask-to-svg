@@ -32,11 +32,23 @@ console.log(width, height, path);
 // 5 7 M2,3H3V2H2ZM2,6H1V1H4V2H5V3H4V4H2Z
 ```
 
-This path data can then be written to 
+This path data can then be written to an SVG file in NodeJS.
+
+```typescript
+import { writeFileSync } from 'fs';
+
+writeFileSync(
+    "letter-p.svg",
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}"><path d="${data}" /></svg>`,
+    {
+      encoding: "utf8"
+    }
+);
+```
 
 ## Spec
 
-The `options` allows the path to be scaled or offset. Width is only required to be passed if the array is not 2 dimensional.
+The `options` allows the path to be scaled or offset. The `width` is only required to be passed if the array is 1 dimensional.
 
 | Property | Default | Description |
 |----------|---------|-------------|
