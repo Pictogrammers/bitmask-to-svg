@@ -7,7 +7,7 @@
   "scripts": {
     "build": "npm run build:lib && npm run build:demo",
     "build:lib": "tsc --project tsconfig.json",
-    "build:demo": "tsc --project tsconfig.demo.json && copyfiles -f src/index.html demo",
+    "build:demo": "tsc --project tsconfig.demo.json && copyfiles -f src/favicon.svg src/index.html demo",
     "start": "npm run build:demo && http-server demo -p 3000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
