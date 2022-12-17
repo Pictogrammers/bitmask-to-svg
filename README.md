@@ -57,3 +57,14 @@ The `options` allows the path to be scaled or offset. The `width` is only requir
 | scale    | `1` | SVG path scale size. |
 | offsetX  | `0` | This x offset ignores scale! |
 | offsetY  | `0` | This y offset ignores scale! |
+
+## Development
+
+Clone the repo.
+
+```bash
+npm install
+npm run build # Build
+npm start # Build + View demo
+# Navigate to localhost:3000
+```

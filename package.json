@@ -2,8 +2,13 @@
   "name": "@pictogrammers/bitmask-to-svg",
   "version": "0.9.0",
   "description": "1 Bit Bitmask to SVG",
-  "main": "index.js",
+  "type": "module",
+  "main": "lib/bitmaskToPath.js",
   "scripts": {
+    "build": "npm run build:lib && npm run build:demo",
+    "build:lib": "tsc --project tsconfig.json",
+    "build:demo": "tsc --project tsconfig.demo.json && copyfiles -f src/index.html demo",
+    "start": "npm run build:demo && http-server demo -p 3000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +20,10 @@
   "bugs": {
     "url": "https://github.com/Pictogrammers/1-bit-image-to-svg/issues"
   },
-  "homepage": "https://github.com/Pictogrammers/1-bit-image-to-svg#readme"
+  "homepage": "https://github.com/Pictogrammers/1-bit-image-to-svg#readme",
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "http-server": "^14.1.1",
+    "typescript": "^4.9.4"
+  }
 }

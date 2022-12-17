@@ -13,9 +13,18 @@ interface Options {
   offsetY?: number;
 }
 
-export function bitmaskToPath(data: number[] | number[][], options: Options) {
+export function toIndex(x: number, y: number, width: number) {
+  return y * width + x;
+}
 
-  let bitmask, width, height, scale = 1, offsetX = 0, offsetY = 0;
+export default function bitmaskToPath(data: number[] | number[][], options: Options = {}) {
+
+  let bitmask: number[] | number[][],
+    width: number,
+    height: number,
+    scale = 1,
+    offsetX = 0,
+    offsetY = 0;
 
   if (options.width) {
     bitmask = data;
@@ -24,10 +33,12 @@ export function bitmaskToPath(data: number[] | number[][], options: Options) {
     if (height % 1 !== 0) {
       throw new Error(`Invalid bitmask width. ${height} = ${bitmask.length} / ${width}`);
     }
-  } else if (bitmask[0] instanceof Array) {
+  } else if (data[0] instanceof Array) {
     bitmask = data.flat();
-    width = bitmask[0].length;
+    width = data[0].length;
     height = bitmask.length;
+  } else {
+    throw new Error(`options.width is required for 1 dimensional array.`)
   }
 
   if (options.scale) {
@@ -47,18 +58,14 @@ export function bitmaskToPath(data: number[] | number[][], options: Options) {
   const newHeight = height + 2;
   const bm = Array(newWidth * newHeight).fill(0);
 
-  function XYToIndex(x, y) {
-    return y * width + x;
-  }
-
   // BM is just shifted over (1, 1) for the padding
-  function BMXYToIndex(x, y) {
+  function BMXYToIndex(x: number, y: number) {
     return (y + 1) * newWidth + (x + 1);
   }
 
   for (let y = 0; y < height; ++y) {
     for (let x = 0; x < width; ++x) {
-      bm[BMXYToIndex(x, y)] = bitmask[XYToIndex(x, y)];
+      bm[BMXYToIndex(x, y)] = bitmask[toIndex(x, y, width)];
     }
   }
 
@@ -68,22 +75,22 @@ export function bitmaskToPath(data: number[] | number[][], options: Options) {
   const edgeCount = edgeXCount + edgeYCount;
 
   const edges = Array(edgeCount).fill(0).map(() => ({ x: 0, y: 0, next: undefined })) as Edge[];
-  function EdgeXIndex(x, y) {
+  function EdgeXIndex(x: number, y: number) {
     return y * width + x;
   }
-  function EdgeYIndex(x, y) {
+  function EdgeYIndex(x: number, y: number) {
     return edgeXCount + y * (width + 1) + x;
   }
 
   const groups = new Set<Edge>();
 
-  function SetEdge(edge, x, y) {
+  function SetEdge(edge: Edge, x: number, y: number) {
     edge.x = x;
     edge.y = y;
     groups.add(edge);
   }
 
-  function UnionGroup(edge) {
+  function UnionGroup(edge: Edge) {
     for (var itr = edge.next; itr !== undefined && itr !== edge; itr = itr.next) {
       groups.delete(itr);
     }
