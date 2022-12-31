@@ -2,7 +2,7 @@
 
 JavaScript Library to convert a 1D/2D Array to an SVG Path.
 
-Link to Demo (coming soon)
+[View the Demo](https://pictogrammers.github.io/@pictogrammers/bitmask-to-svg/)
 
 ## Usage
 
