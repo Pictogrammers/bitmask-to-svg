@@ -191,9 +191,9 @@ export default function bitmaskToPath(data: number[] | number[][], options: Opti
     path += `M${edge.x * scale},${edge.y * scale}`;
     for (var itr = edge.next; itr != edge; itr = itr?.next) {
       if (itr?.type == 'H') {
-        path += `H${itr?.x * scale}`;
+        path += `H${(itr?.x * scale) + offsetX}`;
       } else if (itr?.type == 'V') {
-        path += `V${itr?.y * scale}`;
+        path += `V${(itr?.y * scale) + offsetY}`;
       }
     }
     path += 'Z';
