@@ -1,6 +1,6 @@
 {
   "name": "@pictogrammers/bitmask-to-svg",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "1 Bit Bitmask to SVG",
   "type": "module",
   "main": "lib/bitmaskToPath.js",

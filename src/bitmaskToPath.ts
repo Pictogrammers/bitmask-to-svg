@@ -36,7 +36,7 @@ export default function bitmaskToPath(data: number[] | number[][], options: Opti
   } else if (data[0] instanceof Array) {
     bitmask = data.flat();
     width = data[0].length;
-    height = bitmask.length;
+    height = data.length;
   } else {
     throw new Error(`options.width is required for 1 dimensional array.`)
   }
