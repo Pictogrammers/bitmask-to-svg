@@ -14,9 +14,9 @@ function Update() {
         }
     }
     const path = bitmaskToPath(bitmask, { width: width, scale: 10 });
-    $path.setAttribute('d', path);
+    $path.setAttribute('d', path[0]);
     const $pathVal = document.querySelector('[data-path]');
-    $pathVal.innerText = path;
+    $pathVal.innerText = path[0];
 }
 window.addEventListener('load', () => {
     $canvas = document.getElementsByTagName('canvas')[0];

@@ -1,6 +1,6 @@
 {
   "name": "@pictogrammers/bitmask-to-svg",
-  "version": "0.9.1",
+  "version": "1.0.0",
   "description": "1 Bit Bitmask to SVG",
   "type": "module",
   "main": "lib/bitmaskToPath.js",
@@ -9,7 +9,8 @@
     "build:lib": "tsc --project tsconfig.json",
     "build:demo": "tsc --project tsconfig.demo.json && copyfiles -f src/favicon.svg src/index.html demo",
     "start": "npm run build:demo && http-server demo -p 3000",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "copyfiles": "^2.4.1",
     "http-server": "^14.1.1",
-    "typescript": "^4.9.4"
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.4"
   }
 }
