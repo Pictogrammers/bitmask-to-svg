@@ -106,10 +106,22 @@ export default function bitmaskToPath(data: number[] | number[][], options: Opti
     return edgeXCount + y * (width + 1) + x;
   }
 
-  const allEdges: Edge[][] = [];
+  // Lazy edge pool: only allocate Edge objects for actual boundary edges.
+  // Indexed as g * edgeCount + edgeIndex to avoid per-group arrays.
+  const edgePool = new Array<Edge | undefined>(edgeCount * groupCount);
+
+  function getEdge(g: number, idx: number): Edge {
+    const key = g * edgeCount + idx;
+    let e = edgePool[key];
+    if (!e) {
+      e = { x: 0, y: 0 };
+      edgePool[key] = e;
+    }
+    return e;
+  }
+
   const allContours: Set<Edge>[] = [];
   for (let g = 0; g < groupCount; ++g) {
-    allEdges.push(Array(edgeCount).fill(0).map(() => ({ x: 0, y: 0, next: undefined })) as Edge[]);
     allContours.push(new Set<Edge>());
   }
 
@@ -143,54 +155,53 @@ export default function bitmaskToPath(data: number[] | number[][], options: Opti
         const groupBit = 1 << g;
         if ((myMask & groupBit) === 0) continue;
 
-        const edges = allEdges[g];
         const contours = allContours[g];
 
         if (!isSet(x - 1, y, groupBit)) {
-          const edge = edges[EdgeYIndex(x, y)];
+          const edge = getEdge(g, EdgeYIndex(x, y));
           SetEdge(contours, edge, x, y + 1);
           if (isSet(x - 1, y - 1, groupBit)) {
-            edge.next = edges[EdgeXIndex(x - 1, y)];
+            edge.next = getEdge(g, EdgeXIndex(x - 1, y));
           } else if (isSet(x, y - 1, groupBit)) {
-            edge.next = edges[EdgeYIndex(x, y - 1)];
+            edge.next = getEdge(g, EdgeYIndex(x, y - 1));
           } else {
-            edge.next = edges[EdgeXIndex(x, y)];
+            edge.next = getEdge(g, EdgeXIndex(x, y));
           }
           UnionGroup(contours, edge);
         }
         if (!isSet(x + 1, y, groupBit)) {
-          const edge = edges[EdgeYIndex(x + 1, y)];
+          const edge = getEdge(g, EdgeYIndex(x + 1, y));
           SetEdge(contours, edge, x + 1, y);
           if (isSet(x + 1, y + 1, groupBit)) {
-            edge.next = edges[EdgeXIndex(x + 1, y + 1)];
+            edge.next = getEdge(g, EdgeXIndex(x + 1, y + 1));
           } else if (isSet(x, y + 1, groupBit)) {
-            edge.next = edges[EdgeYIndex(x + 1, y + 1)];
+            edge.next = getEdge(g, EdgeYIndex(x + 1, y + 1));
           } else {
-            edge.next = edges[EdgeXIndex(x, y + 1)];
+            edge.next = getEdge(g, EdgeXIndex(x, y + 1));
           }
           UnionGroup(contours, edge);
         }
         if (!isSet(x, y - 1, groupBit)) {
-          const edge = edges[EdgeXIndex(x, y)];
+          const edge = getEdge(g, EdgeXIndex(x, y));
           SetEdge(contours, edge, x, y);
           if (isSet(x + 1, y - 1, groupBit)) {
-            edge.next = edges[EdgeYIndex(x + 1, y - 1)];
+            edge.next = getEdge(g, EdgeYIndex(x + 1, y - 1));
           } else if (isSet(x + 1, y, groupBit)) {
-            edge.next = edges[EdgeXIndex(x + 1, y)];
+            edge.next = getEdge(g, EdgeXIndex(x + 1, y));
           } else {
-            edge.next = edges[EdgeYIndex(x + 1, y)];
+            edge.next = getEdge(g, EdgeYIndex(x + 1, y));
           }
           UnionGroup(contours, edge);
         }
         if (!isSet(x, y + 1, groupBit)) {
-          const edge = edges[EdgeXIndex(x, y + 1)];
+          const edge = getEdge(g, EdgeXIndex(x, y + 1));
           SetEdge(contours, edge, x + 1, y + 1);
           if (isSet(x - 1, y + 1, groupBit)) {
-            edge.next = edges[EdgeYIndex(x, y + 1)];
+            edge.next = getEdge(g, EdgeYIndex(x, y + 1));
           } else if (isSet(x - 1, y, groupBit)) {
-            edge.next = edges[EdgeXIndex(x - 1, y + 1)];
+            edge.next = getEdge(g, EdgeXIndex(x - 1, y + 1));
           } else {
-            edge.next = edges[EdgeYIndex(x, y)];
+            edge.next = getEdge(g, EdgeYIndex(x, y));
           }
           UnionGroup(contours, edge);
         }
@@ -231,19 +242,19 @@ export default function bitmaskToPath(data: number[] | number[][], options: Opti
       } while (itr !== edge);
     }
 
-    let path = '';
+    const parts: string[] = [];
     for (const edge of contours) {
-      path += `M${edge.x * scale},${edge.y * scale}`;
+      let s = `M${edge.x * scale},${edge.y * scale}`;
       for (var itr = edge.next; itr != edge; itr = itr?.next) {
         if (itr?.type == 'H') {
-          path += `H${(itr?.x * scale) + offsetX}`;
+          s += `H${(itr?.x * scale) + offsetX}`;
         } else if (itr?.type == 'V') {
-          path += `V${(itr?.y * scale) + offsetY}`;
+          s += `V${(itr?.y * scale) + offsetY}`;
         }
       }
-      path += 'Z';
+      parts.push(s + 'Z');
     }
-    paths.push(path);
+    paths.push(parts.join(''));
   }
 
   return paths;
