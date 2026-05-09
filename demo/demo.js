@@ -37,7 +37,7 @@ function update() {
     const path = bitmaskToPath(bitmask, { width, scale, include: group });
     $path.setAttribute('d', path[0]);
     const $pathVal = document.querySelector('[data-path]');
-    $pathVal.innerText = path[0];
+    $pathVal.innerText = path.join("\n");
     const $svg = document.getElementById('preview');
     $svg === null || $svg === void 0 ? void 0 : $svg.setAttribute('viewBox', `0 0 ${width * scale} ${height * scale}`);
     // Write to table cells
